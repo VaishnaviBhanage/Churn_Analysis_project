@@ -21,17 +21,33 @@ GROUP BY DATETRUNC(MONTH , churn_date))
 
 GO
 CREATE VIEW New_vs_ChurnedUsers AS(
-SELECT Month,
-SUM(New_Users)AS New_Customers,
-SUM(Churned_Users) AS Churned_Customers FROM(
-SELECT DATETRUNC(MONTH, signup_date) AS Month,
-1 AS New_Users,
-0 AS Churned_Users FROM saas.customer_churn
-UNION ALL
-SELECT DATETRUNC(MONTH, signup_date) AS Month,
-1 AS Churned_Users,
-0 AS New_Users FROM saas.customer_churn
-WHERE churned = 1)t GROUP BY Month)
+SELECT 
+    Month,
+    SUM(New_Users) AS New_Customers,
+    SUM(Churned_Users) AS Churned_Customers
+FROM (
+    
+    -- New Users
+    SELECT 
+        DATETRUNC(MONTH, signup_date) AS Month,
+        COUNT(*) AS New_Users,
+        0 AS Churned_Users
+    FROM saas.customer_churn
+    GROUP BY DATETRUNC(MONTH, signup_date)
+
+    UNION ALL
+
+    -- Churned Users
+    SELECT 
+        DATETRUNC(MONTH, churn_date) AS Month,
+        0 AS New_Users,
+        COUNT(*) AS Churned_Users
+    FROM saas.customer_churn
+    WHERE churned = 1
+    GROUP BY DATETRUNC(MONTH, churn_date)
+
+) t
+GROUP BY Month)
 
 GO
 CREATE VIEW Plan_Metrics AS(
@@ -134,35 +150,36 @@ GROUP BY Tenure_group;
 
 GO
 CREATE VIEW Risk AS
+
 WITH risk_scored AS (
-    SELECT churned, effective_mrr,
-        CASE
-            WHEN logins_per_week < 3 THEN 1 ELSE 0 END
-          + CASE WHEN features_used <= 3 THEN 1 ELSE 0 END
-          + CASE WHEN support_tickets_last_90d >= 3 THEN 1 ELSE 0 END
-          + CASE WHEN nps_score <= 5 THEN 1 ELSE 0 END
-          + CASE WHEN DATEDIFF(day, last_activity_date, '2024-12-31') > 30 THEN 1 ELSE 0 END
+    SELECT
+        effective_mrr,
+        CASE WHEN logins_per_week < 3 THEN 1 ELSE 0 END
+        + CASE WHEN features_used <= 3 THEN 1 ELSE 0 END
+        + CASE WHEN support_tickets_last_90d >= 3 THEN 1 ELSE 0 END
+        + CASE WHEN nps_score <= 5 THEN 1 ELSE 0 END
+        + CASE WHEN DATEDIFF(day, last_activity_date, '2024-12-31') > 30 THEN 1 ELSE 0 END
         AS risk_score
     FROM saas.customer_churn
+    WHERE churned = 0
 ),
 
 risk_labeled AS (
-    SELECT churned, effective_mrr,
+    SELECT
+        effective_mrr,
+        risk_score,
         CASE
-            WHEN risk_score <= 1 THEN 'Healthy'
-            WHEN risk_score <= 3 THEN 'At Risk'
-            ELSE 'High Risk'
-        END AS risk_level
+    WHEN risk_score <= 1 THEN 'Healthy'
+    WHEN risk_score = 2  THEN 'At Risk'
+    ELSE 'High Risk'
+    END AS risk_level
     FROM risk_scored
 )
 
 SELECT
- risk_level, COUNT(*) AS customer_count,
- ROUND(CAST(SUM(CASE WHEN churned= 1 THEN 1 ELSE 0 END) AS float)/COUNT(*)*100,2) AS churn_rate,
-
-  ROUND( SUM(CASE WHEN churned = 0 THEN effective_mrr ELSE 0 END), 2) AS active_mrr,
-
-  ROUND(SUM(CASE WHEN churned = 0 THEN effective_mrr ELSE 0 END) * 100.0 /
-  SUM(SUM(CASE WHEN churned = 0 THEN effective_mrr ELSE 0 END)) OVER(),2) AS pct_revenue
+    risk_level,
+    COUNT(*) AS customer_count,
+    ROUND(SUM(effective_mrr), 2) AS active_mrr,
+    ROUND(SUM(effective_mrr) * 100.0 / SUM(SUM(effective_mrr)) OVER(), 2) AS pct_revenue
 FROM risk_labeled
 GROUP BY risk_level;
