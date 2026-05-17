@@ -1,6 +1,8 @@
 # SaaS Customer Churn & Revenue Analytics
 
-> **End-to-end analytics project analyzing SaaS customer churn, revenue performance, customer risk segmentation, and retention patterns using Python, SQL Server, DAX, and Power BI.**
+> **End-to-end analytics project on 5,000 SaaS customers ($557.9K MRR) 
+identifying churn drivers, flagging 439 at-risk accounts representing 
+$59.8K in revenue exposure, built on a Python → SQL Server → Power BI pipeline.**
 
 ---
 
