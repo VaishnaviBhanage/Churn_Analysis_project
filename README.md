@@ -19,7 +19,6 @@ The dashboard is designed to simulate a real-world SaaS analytics solution used 
 | Overall Churn Rate | 24.26%    |
 | Total MRR          | $557.90K  |
 | Revenue Lost       | $153.08K  |
-| ARPU               | $142      |
 
 ---
 
@@ -49,7 +48,7 @@ Focuses on high-level SaaS performance metrics and revenue trends.
 * Revenue Lost
 * Monthly Revenue & Churn Trends
 * New vs Churned Customers over time
-* Global Customer Distribution
+* Global Customer & Revenue Distribution
 * Service Plan Performance
 
 ---
@@ -249,11 +248,11 @@ Potential future enhancements include:
 # File Structure
 
 ```text
-SaaS_Churn_Analytics/
-┣ saas_churn_dataset.csv       # Raw synthetic dataset — 5,000 rows, 19 columns
-┣ saas_churn_cleaned.csv       # Cleaned dataset loaded into SQL Server
-┣ clean_saas_data.py           # Python cleaning script
-┣ sql_queries.sql              # All T-SQL views and KPI logic
-┣ dashboard.pbix               # Power BI dashboard file
+SaaS_Churn_Analysis/
+┣ saas_churn_dataset_raw.csv   # Raw synthetic dataset — 5,000 rows, 19 columns
+┣ customer_churn.csv           # Cleaned dataset loaded into SQL Server
+┣ SaaS.py                      # Python cleaning script
+┣ churn_analysis.sql           # All T-SQL views and KPI logic
+┣ saas_churn_dashboard.pbix    # Power BI dashboard file
 ┗ README.md                    # Project documentation
 ```
