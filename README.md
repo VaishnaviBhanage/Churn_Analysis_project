@@ -1,8 +1,6 @@
 # SaaS Customer Churn & Revenue Analytics
 
-> **End-to-end analytics project on 5,000 SaaS customers ($557.9K MRR) 
-identifying churn drivers, flagging 439 at-risk accounts representing 
-$59.8K in revenue exposure, built on a Python → SQL Server → Power BI pipeline.**
+> **End-to-end analytics project analyzing SaaS customer churn, revenue performance, customer risk segmentation, and retention patterns using Python, SQL Server, DAX, and Power BI.**
 
 ---
 
@@ -19,6 +17,20 @@ The dashboard is designed to simulate a real-world SaaS analytics solution used 
 | Overall Churn Rate | 24.26%    |
 | Total MRR          | $557.90K  |
 | Revenue Lost       | $153.08K  |
+
+---
+
+# Business Problem
+
+SaaS businesses lose recurring revenue every month when customers cancel their subscriptions. Unlike one-time purchases, churn directly erodes MRR and makes growth harder — every churned customer is revenue that needs to be replaced before the business can grow.
+
+The core questions this project set out to answer:
+
+* Why are customers churning — what behavioral and demographic patterns drive cancellation?
+* Which customer segments are most at risk and how much revenue do they represent?
+* Where should a customer success team focus their retention efforts first?
+
+Without visibility into these questions, retention strategies are reactive — teams only find out a customer is leaving when they cancel, not before.
 
 ---
 
@@ -48,7 +60,7 @@ Focuses on high-level SaaS performance metrics and revenue trends.
 * Revenue Lost
 * Monthly Revenue & Churn Trends
 * New vs Churned Customers over time
-* Global Customer & Revenue Distribution
+* Global Customer Distribution
 * Service Plan Performance
 
 ---
@@ -205,15 +217,16 @@ Customer retention improves significantly with tenure.
 
 # Conclusion
 
-The dashboard reveals that churn risk is heavily influenced by:
+The analysis reveals that churn in this SaaS business is not random — it is driven by measurable, predictable patterns across engagement, satisfaction, tenure, and plan type.
 
-* Service plan tier
-* Customer engagement
-* Satisfaction levels
-* Customer tenure
-* Industry type
+Key findings that directly answer the business problem:
 
-While the business demonstrates strong recurring revenue generation, reducing churn among early-stage and low-engagement customers represents the largest opportunity for improving long-term SaaS growth and profitability.
+* **Onboarding is the biggest gap** — customers in their first 6 months churn at 48%, nearly double the overall rate. Early-stage customers are not finding value fast enough to commit long-term
+* **Low engagement is the strongest churn signal** — customers logging in 0–1 times per week churn at the highest rate. Usage frequency predicts retention more reliably than any other single variable
+* **$65.4K in active MRR is at risk** — 439 customers scored At Risk or High Risk on the composite behavioral model, giving the customer success team a prioritized list to act on before churn happens
+* **Enterprise customers are the stickiest** — 18.99% churn vs 26.82% for Starter, confirming that higher-tier customers with deeper product integration are significantly harder to lose
+
+The dashboard moves retention from reactive to proactive — instead of responding to cancellations, the business can identify at-risk customers early, intervene with targeted outreach, and protect recurring revenue before it is lost.
 
 ---
 
@@ -243,7 +256,7 @@ Potential future enhancements include:
 * Subscription upgrade/downgrade tracking
 * Retention recommendation engine
 
----
+```
 
 # File Structure
 
